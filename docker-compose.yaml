@@ -3,6 +3,7 @@ version: '3.8'
 services:
   jenkins:
     restart: always
+    tty: true
     environment:
       VAULT_ADDR: "http://vault-server:8200"
     image: jenkins/jenkins:lts
