@@ -1,0 +1,80 @@
+# docker-compose.yaml
+version: '3.8'
+services:
+  # jenkins:
+  #   restart: always
+  #   environment:
+  #     VAULT_ADDR: "http://vault-server:8200"
+  #   image: jenkins/jenkins:lts
+  #   privileged: true
+  #   user: root
+  #   ports:
+  #    - 8080:8080
+  #    - 50000:50000
+  #   container_name: jenkins
+  #   volumes:
+  #     - jenkins:/var/jenkins_home
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  # vault-server:
+  #   container_name: vault
+  #   restart: always
+  #   image: vault:latest
+  #   user: root
+  #   ports:
+  #     - "8200:8201"
+  #   environment:
+  #     VAULT_ADDR: "http://0.0.0.0:8201"
+  #     VAULT_DEV_ROOT_TOKEN_ID: "vault-plaintext-root-token"
+  #     VAULT_LOCAL_CONFIG: >-
+  #       {
+  #         "ui": true,
+  #         "default_lease_ttl": "168h",
+  #         "listener": {
+  #             "tcp": {
+  #                 "address": "0.0.0.0:8201",
+  #                 "tls_disable": "1"
+  #             }
+  #         },
+  #         "max_lease_ttl": "720h"
+  #       }
+  #   cap_add:
+  #     - IPC_LOCK
+  #   volumes:
+  #     - vault:/vault
+  sonarqube:
+    image: sonarqube:lts-community
+    hostname: sonarqube
+    container_name: sonarqube
+    depends_on:
+      - db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+  db:
+    image: postgres:12
+    hostname: postgresql
+    container_name: postgresql
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+
+volumes:
+  vault:
+  jenkins:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresql:
+  postgresql_data:
