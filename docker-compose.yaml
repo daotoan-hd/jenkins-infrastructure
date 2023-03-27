@@ -6,7 +6,7 @@ services:
     tty: true
     environment:
       VAULT_ADDR: "http://vault-server:8200"
-    image: jenkins/jenkins:lts
+    image: daotoanhd/jenkins:1.0.0
     privileged: true
     user: root
     ports:
